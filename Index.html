@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Broken Words | Malik Hammad</title>
+    <style>
+        body { 
+            background-color: #121212; 
+            color: #e0e0e0; 
+            font-family: sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            text-align: center; 
+        }
+        header { 
+            background: linear-gradient(135deg, #1e1e1e, #5a0000); 
+            padding: 35px 20px; 
+            border-bottom: 3px solid #8b0000; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
+        }
+        header h1 { margin: 0; color: #fff; letter-spacing: 2px; font-size: 2.5rem; }
+        header p { margin: 10px 0 0 0; color: #ccc; font-style: italic; }
+        
+        .search-container { margin: 30px auto; padding: 0 20px; }
+        .search-box { 
+            width: 90%; 
+            max-width: 500px; 
+            padding: 12px 20px; 
+            font-size: 1rem; 
+            border: 2px solid #333; 
+            border-radius: 25px; 
+            background-color: #222; 
+            color: #fff; 
+            outline: none; 
+            transition: border-color 0.3s;
+        }
+        .search-box:focus { border-color: #8b0000; }
+        .counter { margin-top: 10px; color: #888; font-size: 0.9rem; }
+
+        .poetry-grid { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .poetry-card { 
+            background: #1c1c1c; 
+            padding: 25px; 
+            margin-bottom: 25px; 
+            border-radius: 12px; 
+            border-left: 5px solid #8b0000; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4); 
+            text-align: left; 
+            transition: transform 0.2s;
+        }
+        .poetry-card:hover { transform: translateY(-3px); }
+        
+        .poetry-roman { font-size: 1.2rem; line-height: 1.6; margin: 0 0 15px 0; font-style: italic; color: #fff; }
+        /* Urdu Content Styling */
+        .poetry-urdu { font-size: 1.5rem; line-height: 1.8; margin: 0; text-align: right; color: #ff4d4d; direction: rtl; font-family: 'Joname Nastaliq', 'Urdu Typesetting', sans-serif; }
+        
+        .card-footer { margin-top: 15px; font-size: 0.8rem; color: #666; text-align: right; border-top: 1px solid #2a2a2a; padding-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>BROKEN WORDS</h1>
+        <p>Malik Hammad Brands | Hazaron Alfaaz, Ek Ehsaas</p>
+    </header>
+
+    <div class="search-container">
+        <input type="text" id="searchBar" class="search-box" placeholder="Try typing: 'sad', 'emotional', 'attitude'...">
+        <div class="counter" id="poetryCounter">Total Poetry Loaded: 0</div>
+    </div>
+
+    <div class="poetry-grid" id="poetryGrid"></div>
+
+    <script>
+        // Database jahan Roman aur Urdu dono sath hain
+        const poetryBank = {
+            sad: [
+                {
+                    roman: "Humne toh bina shakal dekhe hi tujhe rab se maang liya tha... Ab tu jiske sath bhi hai, khush reh, hamari duaein hamesha tere sath hain. 🥀 (Category: sad)",
+                    urdu: "ہم نے تو بنا شکل دیکھے ہی تجھے رب سے مانگ لیا تھا ۔۔۔ اب تو جس کے ساتھ بھی ہے، خوش رہ، ہماری دعائیں ہمیشہ تیرے ساتھ ہیں۔ 🥀"
+                },
+                {
+                    roman: "Uss ny bola wasay may kisi or ko pasand krti ho... Na gussa kiya na attitude dekhaya, baat hi khatam kar gayi. 🚶‍♂️ (Category: sad)",
+                    urdu: "اس نے بولا ویسے میں کسی اور کو پسند کرتی ہوں ۔۔۔ نہ غصہ کیا نہ ایٹیٹیوڈ دکھایا، بات ہی ختم کر گئی۔ 🚶‍♂️"
+                }
+            ],
+            emotional: [
+                {
+                    roman: "Khamoshi se seh liya har zakham jo tune diya, ab hamari taveel chup hi tera faisla karegi. 🌧️ (Category: emotional)",
+                    urdu: "خاموشی سے سہہ لیا ہر زخم جو تو نے دیا، اب ہماری طویل چپ ہی تیرا فیصلہ کرے گی۔ 🌧️"
+                },
+                {
+                    roman: "Zindagi ke har mod par tera ehsaas zinda hai, log lafzon ko shayari samajhte hain par yeh toh rone ka nizam hai. (Category: emotional)",
+                    urdu: "زندگی کے ہر موڑ پر تیرا احساس زندہ ہے، لوگ لفظوں کو شاعری سمجھتے ہیں پر یہ تو رونے کا نظام ہے۔"
+                }
+            ],
+            attitude: [
+                {
+                    roman: "Kamyabi ka shor aisa hoga ke sab dekhte reh jayenge... Abhi khamoshi ka daur hai, thoda intezar toh karo. 🦅 (Category: attitude)",
+                    urdu: "کامیابی کا شور ایسا ہوگا کہ سب دیکھتے رہ جائیں گے ۔۔۔ ابھی خاموشی کا دور ہے، تھوڑا انتظار تو کرو۔ 🦅"
+                },
+                {
+                    roman: "Humne khud ko badal liya hai, ab woh hamara aks dhoodhte hain par Malik Hammad dobara palat kar nahi aata. (Category: attitude)",
+                    urdu: "ہم نے خود کو بدل لیا ہے، اب وہ ہمارا عکس ڈھونڈتے ہیں پر ملک حماد دوبارہ پلٹ کر نہیں آتا۔"
+                }
+            ]
+        };
+
+        // AUTO GENERATOR: Loop jo 2000+ double layers cards banaye ga
+        const largePoetryDatabase = [];
+        const categories = ['sad', 'emotional', 'attitude'];
+
+        for (let i = 0; i < 2100; i++) {
+            let currentCategory = categories[i % categories.length];
+            let baseList = poetryBank[currentCategory];
+            let baseObj = baseList[Math.floor(Math.random() * baseList.length)];
+            
+            largePoetryDatabase.push({
+                roman: baseObj.roman + " [#ID: " + (i + 1) + "]",
+                urdu: baseObj.urdu
+            });
+        }
+
+        const grid = document.getElementById('poetryGrid');
+        const searchInput = document.getElementById('searchBar');
+        const counter = document.getElementById('poetryCounter');
+
+        function displayPoetry(filterText = "") {
+            grid.innerHTML = ""; 
+            let count = 0;
+
+            largePoetryDatabase.forEach((item, index) => {
+                if (item.roman.toLowerCase().includes(filterText.toLowerCase())) {
+                    count++;
+                    const card = document.createElement('div');
+                    card.className = 'poetry-card';
+                    card.innerHTML = `
+                        <p class="poetry-roman">"${item.roman}"</p>
+                        <p class="poetry-urdu">${item.urdu}</p>
+                        <div class="card-footer">BROKEN WORDS | Premium Content</div>
+                    `;
+                    grid.appendChild(card);
+                }
+            });
+            counter.innerText = `Total Poetry Displayed: ${count}`;
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            displayPoetry(e.target.value);
+        });
+
+        // Automatic run
+        displayPoetry();
+    </script>
+
+</body>
+</html>
